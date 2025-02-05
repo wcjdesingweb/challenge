@@ -3,11 +3,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const nombreInput = document.querySelector("#amigo");
     const adicionarBtn = document.querySelector(".button-add");
     const sortearBtn = document.querySelector(".button-draw");
-    const listaAmigos = document.querySelector("#listaAmigos");
+    const listaNombres = document.querySelector("#listaAmigos");
     const resultado = document.querySelector("#resultado");
-    
+
     let amigos = [];
-    
+
     function agregarAmigo() {
         const nombre = nombreInput.value.trim();
         if (nombre === "") {
@@ -15,44 +15,41 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
         if (amigos.includes(nombre)) {
-            alert("Este nombre ya fue agregado.");
+            alert("El nombre ya está en la lista.");
             return;
         }
         amigos.push(nombre);
         actualizarLista();
         nombreInput.value = "";
-        actualizarBotonSortear();
+        nombreInput.focus();
     }
-    
-    function actualizarLista() {
-        listaAmigos.innerHTML = "";
-        amigos.forEach(nombre => {
-            const li = document.createElement("li");
-            li.textContent = nombre;
-            listaAmigos.appendChild(li);
-        });
-    }
-    
-    function actualizarBotonSortear() {
-        sortearBtn.disabled = amigos.length === 0;
-    }
-    
-    function sortearAmigo() {
+
+    adicionarBtn.addEventListener("click", agregarAmigo);
+
+    nombreInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Evita el comportamiento por defecto del formulario
+            agregarAmigo();
+        }
+    });
+
+    sortearBtn.addEventListener("click", () => {
         if (amigos.length === 0) {
             alert("La lista está vacía. Agregue nombres antes de sortear.");
             return;
         }
         const indiceAleatorio = Math.floor(Math.random() * amigos.length);
-        resultado.innerHTML = `<strong>El amigo secreto es:</strong> ${amigos[indiceAleatorio]}`;
-    }
-    
-    adicionarBtn.addEventListener("click", agregarAmigo);
-    sortearBtn.addEventListener("click", sortearAmigo);
-    nombreInput.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
-            agregarAmigo();
-        }
+        resultado.textContent = `El amigo secreto es: ${amigos[indiceAleatorio]}`;
     });
-    
-    actualizarBotonSortear();
+
+    function actualizarLista() {
+        listaNombres.innerHTML = "";
+        amigos.forEach(nombre => {
+            const li = document.createElement("li");
+            li.textContent = nombre;
+            listaNombres.appendChild(li);
+        });
+
+        sortearBtn.disabled = amigos.length === 0;
+    }
 });
